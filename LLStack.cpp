@@ -6,7 +6,8 @@
 	// so be sure that the "next" Node is linked to a nullptr
 Node::Node(string s) 
 {
-
+	data = s;
+	next = nullptr;
 }
 
 //constructor : initiazlize the head and tail field from LLStack class 
@@ -14,7 +15,9 @@ Node::Node(string s)
 	// the head and tail should both be initialized as null pointers
 LLStack::LLStack()
 {
-
+	head = nullptr;
+	tail = nullptr;
+	count = 0;
 }
 
 /*
@@ -24,7 +27,10 @@ LLStack::LLStack()
 */
 string LLStack::top()
 {
-	return "fixthis";
+	if (head == nullptr) {
+		return "";
+	}
+	return head->data;
 }
 
 /*
@@ -32,7 +38,7 @@ string LLStack::top()
 */
 int LLStack::size()
 {
-	return -1;
+	return count;
 }
 
 /*
@@ -45,7 +51,15 @@ int LLStack::size()
 */
 void LLStack::push(string s)
 {
-
+	Node* newNode = new Node(s);
+	if(head == nullptr){
+		head = newNode;
+		tail = newNode;
+	} else {
+		newNode->next = head;
+		head = newNode;
+	}
+	count++;
 }
 
 /*
@@ -57,9 +71,20 @@ void LLStack::push(string s)
 */
 void LLStack::pop()
 {
-
-}
-
+ if( head == nullptr ) {
+		return; 
+	}
+	else if( head == tail){
+		head = nullptr;
+		tail = nullptr;
+	}
+	else{
+		Node* temp = head;
+		head = head->next;
+		delete temp;
+	}
+	count--;
+	}
 /*
     define the removeAll() method, which removes all nodes 
     that have data equal to the given target string.
@@ -82,6 +107,41 @@ void LLStack::pop()
 */
 int LLStack::removeAll(const string& target) 
 {
-	return -1;
+	if( head == nullptr ) {
+		tail = nullptr;
+		return 0; 
+	}
+	int removed = 0;
+    Node* curr = head;
+    Node* prev = nullptr;
+
+    while (curr) {
+        if (curr->data == target) {
+            Node* temp = curr;
+            curr = curr->next;
+
+            // unlink node
+            if(prev){
+				prev->next = curr;
+			}
+            else{
+				head = curr;
+			}
+
+            delete temp;
+            removed++;
+            count--;
+        } else {
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+
+    // fix tail
+    tail = head;
+    while (tail && tail->next){
+        tail = tail->next;
+	}
+	return removed;
 }
 
